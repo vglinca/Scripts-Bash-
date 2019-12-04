@@ -1,0 +1,4 @@
+#!/bin/bash
+nice -n 19 ./endless&
+nice -n 10 ./endless&
+exit 0

@@ -1,0 +1,91 @@
+#!/bin/bash
+[ $# -ne 1 ] && echo "Script requires a file parameter" && exit 1
+fileName=$1
+found=""
+found=$(basename "$(grep $1 $HOME/.trash.log)" | awk -F ":" '{print $1}')
+[[ $found = "" ]] && echo "Nothing to restore.." && exit 1
+logfiles=$(cat $HOME/.trash.log)
+#echo -n "" > $HOME/.trash.log
+for row in $logfiles
+do
+#	echo "Row: $row"
+	if [[ "$row" =~ "/$fileName:" ]]
+	then
+		echo -n "Restore $row? [Y/n] "
+		read ans
+		if [[ $ans = "y" ]] || [[ $ans = "Y" ]]
+		then
+			fullPath=$(echo $row | awk -F ":" '{print $1}')
+			hardLink=$(echo $row | awk -F ":" '{print $2}')
+			fileInTrash="$HOME/.trash/$hardLink"
+			ecran="$(echo "$row" | sed -e 's/[\/():&]/\\&/g')"
+			sed -i "/$ecran/d" $HOME/.trash.log
+			if [ -d $(dirname $fullPath) ]
+			then
+				while [ -e $fullPath ]
+				do
+					echo "File $fileName already exists."
+					echo -n " Rename restoring file to continue. Rename? [Y/n] "
+					read ans
+					if [[ $ans = "y" ]] || [[ $ans = "Y" ]]
+					then
+						echo -n "New file name: "
+						read newName
+						fullPath=$(dirname $fullPath)"/"$newName
+					else
+						break
+					fi
+				done
+				if [ ! -e $fullPath ]
+				then
+					ln $fileInTrash $fullPath
+					rm $fileInTrash
+					echo "Restored $fullPath"
+				else
+					echo $row >> $HOME/.trash.log
+				fi				
+			else
+				echo "No such directory: $(dirname $fullPath)"
+				echo "$fullPath will be restored in $HOME"
+				if [ ! -e ~/fileName ]
+				then
+					dir=$HOME"/"$fileName					
+					ln $fileInTrash $dir
+					rm $fileInTrash
+					echo "$fileName restored to $HOME/$hardLink"
+				else
+					echo "File $fileName already exists"
+					echo -n "Rename restoring file, to continue. Rename? [Y/n] "
+					read ans
+					if [[ $ans = "y" ]] || [[ $ans = "Y" ]]
+					then
+						echo -n "Enter new file name: "
+						read newName
+						while [ test -f "$HOME/$newName" ]
+						do
+							echo "File with name $newName exists"
+							echo -n "Enter new file name: "
+							read newName
+						done 
+						dir=$HOME"/"$newName
+						ln $fileInTrash $dir
+						rm $fileInTrash
+						echo "File $fileName restored in $HOME: $HOME/$fileName"
+					else
+						echo $row >> $HOME/.trash.log
+#						break
+					fi
+				#	exit 1
+				fi
+			fi
+		else			
+			echo $row >> $HOME/.trash.log
+#			break
+		fi
+	else
+		echo $row >> $HOME/trash.log
+		break
+	fi
+done
+exit 0
+

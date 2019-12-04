@@ -1,0 +1,31 @@
+#! /bin/bash
+ppid=0
+n=0
+vol=0
+nonvol=0
+b=""
+while read line
+do
+ppid1=$(echo $line | grep -E -h -s -i -o "Parent_ProcessID=[0-9]+" | grep -E -o "[0-9]+")
+echo "PPID = $ppid1"
+pid=$(echo $line | grep -E -h -s -i -o "ProcessID=[0-9]+" | grep -E -o "[0-9]+" | tr '\n' '\0')
+status="/proc/$pid/status"
+echo "PID = $pid"
+echo "status = $status"
+if [[ $ppid == $ppid1 ]]
+then
+	vol=$(cat $status | grep "voluntary_ctxt_switches" | awk '{print $2}')
+	nonvol=$(cat $status | grep "nonvoluntary_ctxt_switches" | awk '{print $2}')	
+	n=$(echo "$vol+$nonvol" | bc -l -q)
+	else
+	if [[ -n $b ]] #if b not empty
+	then
+		b=$b"Sum_Switches_of_ParentID="$ppid" is "$sleepavg$'\n' #concatenation
+	fi
+	n=0
+	ppid=$ppid1
+fi
+#b=$b$line$'\n'
+done < tmpres5_1.tmp
+echo "$b" >> res6.tmp
+exit 0

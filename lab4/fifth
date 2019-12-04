@@ -1,0 +1,28 @@
+#! /bin/bash
+var1="^#!/bin/sh"
+var2="^#!/bin/bash"
+var3="^#!/usr/bin/perl"
+var4="^#!/usr/bin/tcl"
+
+i1=0
+i2=0
+i3=0
+i4=0
+fileslst=`ls /bin/*`
+for item in $fileslst
+do
+	if [[ -x $item ]]; then
+		read -r < $item line
+		if   [[ $line =~ $var1 ]]; then let "i1++"
+		elif [[ $line =~ $var2 ]]; then let "i2++"
+		elif [[ $line =~ $var3 ]]; then let "i3++"
+		elif [[ $line =~ $var4 ]]; then let "i4++"
+		fi
+	fi
+done
+echo $var1 $i1
+echo $var2 $i2
+echo $var3 $i3
+echo $var4 $i4
+
+exit 0

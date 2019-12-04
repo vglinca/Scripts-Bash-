@@ -1,0 +1,9 @@
+#! /bin/bash
+ps -Ao pid | tail -n +2 | awk '{file1="/proc/"$1"/statm"
+getline f<file1
+close(file1)
+split(f, a)
+print $1, ":", a[2]-a[3]}' | tr -d " " | sort -r -n -t ":" -k2 > res4.tmp
+cat res4.tmp
+rm -rf res4.tmp
+exit 0

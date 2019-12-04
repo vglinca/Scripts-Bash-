@@ -1,0 +1,12 @@
+#!/bin/bash
+str=""
+echo -n "var = "
+read var
+str+=$var
+while [ "$var" != "v" ]
+do
+read var
+str+=$var
+done
+echo "variable is $str"
+exit 0

@@ -1,0 +1,21 @@
+#! /bin/bash
+ps -eo pid | tail -n +2 | head -n -3 > res5_1.tmp
+ppid=""
+while read pid
+do
+status="/proc/$pid/status"
+sched="/proc/$pid/sched"
+ppid=$(cat $status | grep "PPid" | awk '{print $2}')
+runtime=$(cat $sched | grep "se.sum_exec_runtime" | awk '{print $3}' | cut -f1 -d ".")
+switches=$(cat $sched | grep  "nr_switches" | awk '{print $3}')
+if [[ -z $switches ]];then sleepavg=0
+fi
+if [[ $switches -ne 0 ]]
+then
+sleepavg=$(echo "$runtime/$switches" | bc -l -q | awk '{printf "%.4f",$0}')
+echo -e "ProcessID=$pid\t: Parent_ProcessID=$ppid\t: Average_Time_Sleeping=$sleepavg" >> tmpres5_1.tmp
+fi
+done < res5_1.tmp
+cat tmpres5_1.tmp | sort -t ":" -k3
+
+exit 0

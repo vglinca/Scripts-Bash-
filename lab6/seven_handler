@@ -1,0 +1,39 @@
+#!/bin/bash
+echo $$ > seven_operation
+c=1
+op="+"
+
+sigterm()
+{
+	echo "Cancelled by SIGTERM signal"
+	exit 0
+}
+
+user1()
+{
+	op="+"
+}
+
+user2()
+{
+	op="*"
+}
+
+trap 'sigterm' SIGTERM
+trap 'user1' USR1
+trap 'user2' USR2
+
+while true;
+do
+	case "$op" in
+	"+")
+		c=$(($c + 2))
+		;;
+	"*")
+		c=$(($c * 2))
+		;;
+	esac
+	sleep 1
+	echo "$c"
+done
+exit 0

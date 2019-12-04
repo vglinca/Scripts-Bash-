@@ -1,0 +1,4 @@
+#! /bin/bash
+count=$(cat $1/var/log/*.log | wc -l)
+echo $count
+exit 0

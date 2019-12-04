@@ -1,0 +1,5 @@
+#! /bin/bash
+
+at now + 2 minutes -f ./lab61
+tail -n 0 -f $HOME/test/report.log
+exit 0

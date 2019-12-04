@@ -1,0 +1,19 @@
+#!/bin/bash
+fileName=$1
+
+[ $# -ne 1 ] && echo "Error: script needs a parameter" && exit 1
+
+[ -d "$1" ] && echo -e "Error.\nIt's a catalog, not simple file." && exit 1
+
+[ -e ~/.trash ] || mkdir ~/.trash
+
+delFileDir=$(date +%s)
+
+ln $fileName ~/.trash/$delFileDir
+
+path=$PWD/$fileName
+echo "$path:$delFileDir" >> ~/.trash.log
+
+rm -- $fileName
+
+exit 0

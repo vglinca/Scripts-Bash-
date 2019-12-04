@@ -1,0 +1,3 @@
+#! /bin/bash
+echo "*/10 * * * 3 ~/lab6/lab61" | crontab
+exit 0

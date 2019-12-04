@@ -1,0 +1,44 @@
+#!/bin/bash
+touch file > file
+n=1
+op="+"
+tail -n 0 -f file |
+while true
+do
+	read line
+	case $line in
+	"+")
+		op="+"
+		echo "Addition mode"
+		;;
+	"*")
+		op="*"
+		echo "Multiplying mode"
+		;;
+	"QUIT")
+		echo "Stopped by QUIT input"
+		killall tail
+		exit 0
+		;;
+	[0-9]*)
+		case $op in	
+		"+")
+			echo -n $n " + " $line
+			n=$(($n + $line))
+			echo " = " $n
+			;;
+		"*")
+			echo -n $n " * " $line
+			n=$(($n * $line))
+			echo " = " $n
+			;;
+		esac
+		;;
+	*)
+		echo "Stopped by wrong input"
+		killall tail
+		exit 0
+		;;
+	esac
+done
+exit 0

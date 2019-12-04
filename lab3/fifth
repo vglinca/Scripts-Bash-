@@ -1,0 +1,11 @@
+#!/bin/bash
+echo -e  "1-nano\n2-xed\n3-Firefox\n4-exit"
+read var
+case $var in
+1)nano;;
+2)xed;;
+3)firefox;;
+4)exit;;
+*)exit;;
+esac
+exit 0

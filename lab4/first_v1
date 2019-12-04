@@ -1,0 +1,19 @@
+#! /bin/bash
+echo -n > $HOME/errors.log
+
+logfiles=`ls /var/log/*.log`
+for file in $logfiles
+do
+	if [[ -r $file ]]; then
+		filename="$file"
+		while read -r line
+		do
+			if [[ $line =~ ACPI ]]; then
+				tmp="$file $line"
+				echo $tmp >> $HOME/errors.log
+				basename "$tmp"
+			fi
+		done < "$filename"
+	fi
+done
+exit 0

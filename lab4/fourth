@@ -1,0 +1,21 @@
+#! /bin/bash
+regex="[a-zA-Z0-9_-.]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{2,4}"
+file=$HOME/emails.lst
+echo -n > $file
+lst=`ls /etc/*`
+for item in $lst
+do
+	if [[ -r $item ]]; then
+		while read -r line
+		do
+			if [[ $line =~ $regex ]]; then
+				echo -n "$BASH_REMATCH," >> $file
+			fi
+		done < "$item"
+	fi
+done
+len=$(wc -c < $file)
+let "len--"
+read -n $len < $file line
+echo $line > $file
+exit 0

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+$HOME/lab6/six_handler&
+while true
+do
+	read line
+	case $line in
+	T)
+		kill -SIGTERM $(cat some_operation)
+		exit 0
+		;;
+	*)
+		continue
+		;;
+	esac
+done
+exit 0	

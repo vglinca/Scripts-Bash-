@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo $$ > some_operation
+i=0
+r=1
+
+stopped()
+{
+	r=0
+}
+
+trap 'stopped' SIGTERM
+while (( r != 0 ))
+do
+	((i=$i + 1))
+	sleep 1
+	echo $i
+done
+echo "Stopped by SIGTERM signal"
+exit 0

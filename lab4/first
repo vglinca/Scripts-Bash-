@@ -1,0 +1,4 @@
+#! /bin/bash
+grep -E -r -h -s "ACPI" /var/log > $HOME/errors.log
+basename -a $(grep -E -r -h -s "ACPI" /var/log)
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/bash
+i=0
+read var
+i=$((i+1))
+while [ $((var%2)) -ne 0 ]
+do
+read var
+i=$((i+1))
+done
+echo "Quantity: $i"
+exit 0

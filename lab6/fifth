@@ -1,0 +1,17 @@
+#!/bin/bash
+$HOME/lab6/five_handler&
+while true
+do
+	read line
+	echo "$line" >> file
+	if [[ "$line" == "QUIT" ]]
+	then
+		exit 0
+	fi
+	if [[ ! "$line" =~ [0-9]+ && "$line" != "+" && "$line" != "*" ]]
+	then
+		echo "Wrong input"
+		exit 1
+	fi
+done
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/bash
+dir=`pwd`
+if [ "$dir" = $HOME ]
+then
+echo "home"
+exit 0
+else
+echo "Error. Your directory: $dir"
+exit 1
+fi
+exit 0

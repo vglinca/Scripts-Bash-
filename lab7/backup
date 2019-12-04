@@ -1,0 +1,46 @@
+#!/bin/bash
+dateFiles=$(ls $HOME | grep -E "^Backup-" | sort -n | tail -n 1 | cut -d "-" -f 2,3,4)
+[ -z "$dateFiles" ] && dateFiles="2019-01-01"
+today=$(date +%Y-%m-%d)
+dateFilesInSeconds=$(date -d $dateFiles +%s)
+todayInSeconds=$(date -d $today +%s)
+srcFiles=$(ls $HOME/source)
+diff=$(( ($todayInSeconds - $dateFilesInSeconds)/60/60/24 ))
+if [[ $diff -gt 7 ]]
+then
+	mkdir $HOME/Backup-$today
+	for file in $srcFiles
+	do
+		cp -r $HOME/source/$file $HOME/Backup-$today
+	done
+	echo -en "'Backup-$today' created successfully.\nDate: $today\nFiles:\n" >> $HOME/backup-report
+	for file in $srcFiles
+	do
+		echo -e "'$file'" >> $HOME/backup-report
+	done
+	echo "------------------------------------------------" >> $HOME/backup-report
+else
+	echo -e "Files from '$HOME/source' updated successfully in 'Backup-$dateFiles'" >> $HOME/backup-report
+	echo -e "Updated on: $today\nUpdated files:" >> $HOME/backup-report	
+	for file in $srcFiles
+	do
+		echo -en "'$file'" >> $HOME/backup-report
+		if [ -f $HOME/Backup-$dateFiles/$file ]
+		then
+			srcFileSize=$(ls -l -- ~/source/$file | awk '{print $5}')
+			bkpFileSize=$(ls -l -- ~/Backup-$dateFiles/$file | awk '{print $5}')
+			if [[ $srcFileSize != $bkpFileSize ]]
+			then
+				mv ~/Backup-$dateFiles/$file ~/Backup-$dateFiles/$file-$dateFiles
+				cp -r ~/source/$file ~/Backup-$dateFiles
+				echo -en " renamed to -> '$file-$dateFiles'\n'$file'" >> $HOME/backup-report
+#			else
+#				echo -en " has the same size as '$HOME/source/$file'" >> $HOME/backup-report
+			fi
+		fi
+		echo "" >> $HOME/backup-report
+		cp -r ~/source/$file ~/Backup-$dateFiles
+	done
+	echo "------------------------------------------------" >> ~/backup-report
+fi
+exit 0
