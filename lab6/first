@@ -1,5 +1,5 @@
 #! /bin/bash
 d=$(date '+%d-%m-%y_%H:%M:%S')
-mkdir $HOME/test && echo -e "catalog test was created successfully" >> $HOME/test/report.log && touch /home/ktulhu/test/$d.list
+mkdir $HOME/test && echo -e "catalog test was created successfully" >> $HOME/test/report.log && touch $HOME/test/$d.list
 ping -c 1 www.cto_tam.ru 2>> $HOME/test/report.log
 exit 0
